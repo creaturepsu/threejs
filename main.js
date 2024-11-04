@@ -1,6 +1,6 @@
 import './style.css'
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 
 //
 
@@ -24,7 +24,7 @@ camera.position.setX(-3);
 // Create a cube
 const cube = (() => {
     const geometry = new THREE.BoxGeometry(10, 10, 10);
-    const material = new THREE.MeshBasicMaterial( { color: 0xFF6347 } );
+    const material = new THREE.MeshBasicMaterial({color: 0xFF6347});
     const cube = new THREE.Mesh(geometry, material);
     cube.position.z = -15;
     cube.position.x = -15;
@@ -37,10 +37,10 @@ scene.add(cube);
 // Create an icosahedron
 const ico = (() => {
     const geometry = new THREE.IcosahedronGeometry(10);
-    const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+    const material = new THREE.MeshPhongMaterial({color: 0x00ff00});
     const ico = new THREE.Mesh(geometry, material);
     ico.position.z = -15;
-    ico.position.x =  15;
+    ico.position.x = 15;
     return ico;
 })();
 scene.add(ico);
@@ -59,13 +59,15 @@ function setupLights(scene) {
     const lightHelper = new THREE.PointLightHelper(pointLight);
     scene.add(lightHelper)
 }
+
 setupLights(scene);
 
 // Grid
 function setupGrid(scene) {
-    const gridHelper = new THREE.GridHelper(200,50);
+    const gridHelper = new THREE.GridHelper(200, 50);
     scene.add(gridHelper)
 }
+
 setupGrid(scene);
 
 // Orbit Controls
@@ -105,3 +107,46 @@ function queueAnimate(lastFrame) {
 
 // Start the animation loop
 queueAnimate(window.performance.now());
+
+// Background
+const spaceTexture = new THREE.TextureLoader().load('images/night_sky.jpg')
+scene.background = spaceTexture;
+
+
+// Object texture mapping
+const smileTexture = new THREE.TextureLoader().load('images/smile.jpg')
+const sphereGeometry = new THREE.SphereGeometry(10, 22, 10);
+const smileMaterial = new THREE.MeshBasicMaterial({map: smileTexture})
+const smileMesh = new THREE.Mesh(sphereGeometry, smileMaterial);
+scene.add(smileMesh);
+
+
+function animate() {
+    requestAnimationFrame(animate);
+    // slowly rotate the cube:
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+    // rotate the icosahedron a little faster in the opposite direction:
+    icoMesh.rotation.z += -0.03
+    icoMesh.rotation.y += -0.03
+    // rotate the smiley sphere on the Y axis:
+    smileMesh.rotation.y += 0.05
+    controls.update()
+
+    renderer.render(scene, camera);
+}
+
+const normalTexture = new THREE.TextureLoader().load('images/normals/textureNormal.png');
+// Normal Texture Map
+
+const torusGeo = new THREE.TorusKnotGeometry(5, 1, 250, 5, 9, 15);
+const torusMaterial = new THREE.MeshStandardMaterial({
+    normalMap: normalTexture,
+    roughness: 10,
+    metalness: .8
+});
+
+const torusKnot = new THREE.Mesh(torusGeo, torusMaterial);
+
+scene.add(torusKnot);
+torusKnot.position.y = 20
