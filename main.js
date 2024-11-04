@@ -74,12 +74,12 @@ const controls = new OrbitControls(camera, renderer.domElement)
 // Drawing
 function draw(delta) {
     // Rotate the cube
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    cube.rotation.x += delta;
+    cube.rotation.y += delta;
 
     // Rotate the icosahedron
-    ico.rotation.z += -0.03
-    ico.rotation.y += -0.03
+    ico.rotation.z += delta * -3;
+    ico.rotation.y += delta * -3;
 
     // Process controls
     controls.update()
