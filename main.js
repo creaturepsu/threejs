@@ -2,6 +2,22 @@ import './style.css'
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 
+/**
+ * By default, the ImageLoader resolves images relative to the site root (/).
+ * This breaks when deploying to GitHub Pages, which requires the index.html to be placed at (/threejs).
+ * This method wraps the ImageLoader to resolve images from a *relative* url.
+ * @type { ((path: string) => import('three').Texture) }
+ */
+const loadTexture = (() => {
+    const loader = new THREE.TextureLoader();
+    const { protocol, host, pathname } = window.location;
+    let baseURL = `${protocol}//${host}${pathname}`;
+    if (baseURL.charCodeAt(baseURL.length - 1) !== 47) baseURL += '/';
+    return ((path) => {
+        return loader.load(baseURL + path);
+    });
+})();
+
 //
 
 const scene = new THREE.Scene();
@@ -109,12 +125,12 @@ function queueAnimate(lastFrame) {
 queueAnimate(window.performance.now());
 
 // Background
-const spaceTexture = new THREE.TextureLoader().load('images/night_sky.jpg')
+const spaceTexture = loadTexture("images/night_sky.jpg");
 scene.background = spaceTexture;
 
 
 // Object texture mapping
-const smileTexture = new THREE.TextureLoader().load('images/smile.jpg')
+const smileTexture = loadTexture("images/smile.jpg");
 const sphereGeometry = new THREE.SphereGeometry(10, 22, 10);
 const smileMaterial = new THREE.MeshBasicMaterial({map: smileTexture})
 const smileMesh = new THREE.Mesh(sphereGeometry, smileMaterial);
@@ -136,7 +152,7 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-const normalTexture = new THREE.TextureLoader().load('images/normals/textureNormal.png');
+const normalTexture = loadTexture("images/textureNormal.png");
 // Normal Texture Map
 
 const torusGeo = new THREE.TorusKnotGeometry(5, 1, 250, 5, 9, 15);
