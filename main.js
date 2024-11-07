@@ -89,6 +89,35 @@ setupGrid(scene);
 // Orbit Controls
 const controls = new OrbitControls(camera, renderer.domElement)
 
+// Background
+const spaceTexture = loadTexture('images/night_sky.jpg')
+scene.background = spaceTexture;
+
+// Object texture mapping
+const smileTexture = loadTexture('images/smile.jpg')
+const sphereGeometry = new THREE.SphereGeometry(10, 22, 10);
+const smileMaterial = new THREE.MeshBasicMaterial({map: smileTexture})
+const smileMesh = new THREE.Mesh(sphereGeometry, smileMaterial);
+scene.add(smileMesh);
+
+const normalTexture = loadTexture('images/normals/textureNormal.png');
+// Normal Texture Map
+
+const torusGeo = new THREE.TorusKnotGeometry(5, 1, 250, 5, 9, 15);
+const torusMaterial = new THREE.MeshStandardMaterial({
+    normalMap: normalTexture,
+    roughness: 10,
+    metalness: .8
+});
+
+const torusKnot = new THREE.Mesh(torusGeo, torusMaterial);
+
+scene.add(torusKnot);
+torusKnot.position.y = 20
+
+// START Draw Logic
+// Should always be placed last, after all objects are set up!
+
 // Drawing
 function draw(delta) {
     // Rotate the cube
@@ -98,6 +127,9 @@ function draw(delta) {
     // Rotate the icosahedron
     ico.rotation.z += delta * -3;
     ico.rotation.y += delta * -3;
+
+    // Rotate the smiley sphere
+    smileMesh.rotation.y += delta * 5;
 
     // Process controls
     controls.update()
@@ -123,46 +155,3 @@ function queueAnimate(lastFrame) {
 
 // Start the animation loop
 queueAnimate(window.performance.now());
-
-// Background
-const spaceTexture = loadTexture("images/night_sky.jpg");
-scene.background = spaceTexture;
-
-
-// Object texture mapping
-const smileTexture = loadTexture("images/smile.jpg");
-const sphereGeometry = new THREE.SphereGeometry(10, 22, 10);
-const smileMaterial = new THREE.MeshBasicMaterial({map: smileTexture})
-const smileMesh = new THREE.Mesh(sphereGeometry, smileMaterial);
-scene.add(smileMesh);
-
-
-function animate() {
-    requestAnimationFrame(animate);
-    // slowly rotate the cube:
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-    // rotate the icosahedron a little faster in the opposite direction:
-    icoMesh.rotation.z += -0.03
-    icoMesh.rotation.y += -0.03
-    // rotate the smiley sphere on the Y axis:
-    smileMesh.rotation.y += 0.05
-    controls.update()
-
-    renderer.render(scene, camera);
-}
-
-const normalTexture = loadTexture("images/textureNormal.png");
-// Normal Texture Map
-
-const torusGeo = new THREE.TorusKnotGeometry(5, 1, 250, 5, 9, 15);
-const torusMaterial = new THREE.MeshStandardMaterial({
-    normalMap: normalTexture,
-    roughness: 10,
-    metalness: .8
-});
-
-const torusKnot = new THREE.Mesh(torusGeo, torusMaterial);
-
-scene.add(torusKnot);
-torusKnot.position.y = 20
