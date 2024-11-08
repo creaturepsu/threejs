@@ -63,10 +63,10 @@ scene.add(ico);
 
 // Lights
 function setupLights(scene) {
-    const pointLight = new THREE.PointLight(0xffffff, 1);
-    pointLight.position.set(0, -10, 10);
+    const pointLight = new THREE.PointLight(0xffffff, 50);
+    pointLight.position.set(0, 10, 10);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff);
+    const ambientLight = new THREE.AmbientLight(0xffffff, .2);
     ambientLight.position.set(25, -15, -400);
 
     scene.add(pointLight);
@@ -96,7 +96,7 @@ scene.background = spaceTexture;
 // Object texture mapping
 const smileTexture = loadTexture('images/smile.jpg')
 const sphereGeometry = new THREE.SphereGeometry(10, 22, 10);
-const smileMaterial = new THREE.MeshBasicMaterial({map: smileTexture})
+const smileMaterial = new THREE.MeshStandardMaterial({map: smileTexture})
 const smileMesh = new THREE.Mesh(sphereGeometry, smileMaterial);
 scene.add(smileMesh);
 
